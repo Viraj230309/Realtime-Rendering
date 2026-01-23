@@ -72,19 +72,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>D:\College\MSc\Semester 2\Realtime-Rendering\Assignment-1\Libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\College\MSc\Semester 2\Realtime-Rendering\Assignment-1\Libraries\include;$(LibraryPath)</LibraryPath>
+    <LibraryPath>D:\College\MSc\Semester 2\Realtime-Rendering\Assignment-1\Libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>D:\College\MSc\Semester 2\Realtime-Rendering\Assignment-1\Libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\College\MSc\Semester 2\Realtime-Rendering\Assignment-1\Libraries\include;$(LibraryPath)</LibraryPath>
+    <LibraryPath>D:\College\MSc\Semester 2\Realtime-Rendering\Assignment-1\Libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>D:\College\MSc\Semester 2\Realtime-Rendering\Assignment-1\Libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\College\MSc\Semester 2\Realtime-Rendering\Assignment-1\Libraries\include;$(LibraryPath)</LibraryPath>
+    <LibraryPath>D:\College\MSc\Semester 2\Realtime-Rendering\Assignment-1\Libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>D:\College\MSc\Semester 2\Realtime-Rendering\Assignment-1\Libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\College\MSc\Semester 2\Realtime-Rendering\Assignment-1\Libraries\include;$(LibraryPath)</LibraryPath>
+    <LibraryPath>D:\College\MSc\Semester 2\Realtime-Rendering\Assignment-1\Libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -145,10 +145,13 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="EBO.cpp" />
+    <ClCompile Include="glad.c" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="shaderClass.cpp" />
+    <ClCompile Include="stb.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="VAO.cpp" />
     <ClCompile Include="VBO.cpp" />
   </ItemGroup>
@@ -158,12 +161,16 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="shaderClass.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="VAO.h" />
     <ClInclude Include="VBO.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="cook_torrance.frag" />
     <None Include="default.frag" />
     <None Include="default.vert" />
+    <None Include="phong.frag" />
+    <None Include="toon.frag" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
