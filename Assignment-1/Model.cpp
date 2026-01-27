@@ -63,15 +63,18 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned> indices;
-    std::vector<TextureInfo> textures;
+    std::vector<TextureInfo> textures; // keep empty on purpose
 
     for (unsigned i = 0; i < mesh->mNumVertices; i++)
     {
         Vertex v;
         v.Position = { mesh->mVertices[i].x,mesh->mVertices[i].y,mesh->mVertices[i].z };
-        v.Normal = mesh->mNormals[i].x ?
-            glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z)
-            : glm::vec3(0);
+        v.Normal = glm::normalize(glm::vec3(
+            mesh->mNormals[i].x,
+            mesh->mNormals[i].y,
+            mesh->mNormals[i].z
+        ));
+
         v.TexCoords = mesh->mTextureCoords[0] ?
             glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y)
             : glm::vec2(0);
@@ -83,28 +86,28 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
         for (unsigned j = 0; j < mesh->mFaces[i].mNumIndices; j++)
             indices.push_back(mesh->mFaces[i].mIndices[j]);
 
-    if (mesh->mMaterialIndex >= 0)
-    {
-        aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
-        auto load = [&](aiTextureType type, std::string name)
-            {
-                for (unsigned i = 0; i < mat->GetTextureCount(type); i++) {
-                    aiString file; mat->GetTexture(type, i, &file);
-                    std::string full = directory + "/" + file.C_Str();
-                    TextureInfo tex;
-                    tex.id = TextureFromFile(full.c_str());
-                    tex.type = name;
-                    tex.path = full;
-                    textures.push_back(tex);
-                    
-                }
-            };
+    //if (mesh->mMaterialIndex >= 0)
+    //{
+    //    aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
+    //    auto load = [&](aiTextureType type, std::string name)
+    //        {
+    //            for (unsigned i = 0; i < mat->GetTextureCount(type); i++) {
+    //                aiString file; mat->GetTexture(type, i, &file);
+    //                std::string full = directory + "/" + file.C_Str();
+    //                TextureInfo tex;
+    //                tex.id = TextureFromFile(full.c_str());
+    //                tex.type = name;
+    //                tex.path = full;
+    //                textures.push_back(tex);
+    //                
+    //            }
+    //        };
 
-        load(aiTextureType_DIFFUSE, "baseColorMap");
-        load(aiTextureType_NORMALS, "normalMap");
-        load(aiTextureType_METALNESS, "metalRoughMap");
-        load(aiTextureType_EMISSIVE, "emissiveMap");
-    }
+    //    load(aiTextureType_DIFFUSE, "baseColorMap");
+    //    load(aiTextureType_NORMALS, "normalMap");
+    //    load(aiTextureType_METALNESS, "metalRoughMap");
+    //    load(aiTextureType_EMISSIVE, "emissiveMap");
+    //}
 
     return Mesh(vertices, indices, textures);
 }

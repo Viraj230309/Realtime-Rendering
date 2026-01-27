@@ -47,7 +47,7 @@ void main()
     vec3 L = normalize(lightPos - FragPos);
     vec3 H = normalize(V + L);
 
-    float roughness = 0.4;
+    float roughness = 0.6;
     vec3 F0 = vec3(0.04);
 
     float NDF = DistributionGGX(N, H, roughness);

@@ -10,20 +10,25 @@ uniform vec3 lightColor;
 
 void main()
 {
-    vec3 norm = normalize(Normal);
-    vec3 lightDir = normalize(lightPos - FragPos);
+    vec3 N = normalize(Normal);
+    vec3 L = normalize(lightPos - FragPos);
 
-    float intensity = dot(norm, lightDir);
+    float NdotL = max(dot(N, L), 0.0);
 
-    float levels;
-    if (intensity > 0.95)
-        levels = 1.0;
-    else if (intensity > 0.5)
-        levels = 0.7;
-    else if (intensity > 0.25)
-        levels = 0.4;
+    // Quantised lighting levels
+    float toonLevel;
+    if (NdotL > 0.75)
+        toonLevel = 1.0;
+    else if (NdotL > 0.4)
+        toonLevel = 0.7;
+    else if (NdotL > 0.2)
+        toonLevel = 0.4;
     else
-        levels = 0.1;
+        toonLevel = 0.2;
 
-    vec3 toonColor = levels * lightColor;
-    FragColor = vec4(toonColor
+    // Ambient term (CRITICAL)
+    vec3 ambient = vec3(0.15);
+
+    vec3 color = ambient + toonLevel * lightColor;
+    FragColor = vec4(color, 1.0);
+}
