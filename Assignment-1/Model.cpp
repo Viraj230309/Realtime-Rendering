@@ -63,7 +63,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned> indices;
-    std::vector<TextureInfo> textures; // keep empty on purpose
+    std::vector<TextureInfo> textures; 
 
     for (unsigned i = 0; i < mesh->mNumVertices; i++)
     {
@@ -86,28 +86,27 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
         for (unsigned j = 0; j < mesh->mFaces[i].mNumIndices; j++)
             indices.push_back(mesh->mFaces[i].mIndices[j]);
 
-    //if (mesh->mMaterialIndex >= 0)
-    //{
-    //    aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
-    //    auto load = [&](aiTextureType type, std::string name)
-    //        {
-    //            for (unsigned i = 0; i < mat->GetTextureCount(type); i++) {
-    //                aiString file; mat->GetTexture(type, i, &file);
-    //                std::string full = directory + "/" + file.C_Str();
-    //                TextureInfo tex;
-    //                tex.id = TextureFromFile(full.c_str());
-    //                tex.type = name;
-    //                tex.path = full;
-    //                textures.push_back(tex);
-    //                
-    //            }
-    //        };
+    if (mesh->mMaterialIndex >= 0)
+    {
+        aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
+        auto load = [&](aiTextureType type, std::string name)
+            {
+                for (unsigned i = 0; i < mat->GetTextureCount(type); i++) {
+                    aiString file; mat->GetTexture(type, i, &file);
+                    std::string full = directory + "/" + file.C_Str();
+                    TextureInfo tex;
+                    tex.id = TextureFromFile(full.c_str());
+                    tex.type = name;
+                    tex.path = full;
+                    textures.push_back(tex);
+                }
+            };
 
-    //    load(aiTextureType_DIFFUSE, "baseColorMap");
-    //    load(aiTextureType_NORMALS, "normalMap");
-    //    load(aiTextureType_METALNESS, "metalRoughMap");
-    //    load(aiTextureType_EMISSIVE, "emissiveMap");
-    //}
+        load(aiTextureType_DIFFUSE, "baseColorMap");
+        load(aiTextureType_NORMALS, "normalMap");
+        load(aiTextureType_METALNESS, "metalRoughMap");
+        load(aiTextureType_EMISSIVE, "emissiveMap");
+    }
 
     return Mesh(vertices, indices, textures);
 }

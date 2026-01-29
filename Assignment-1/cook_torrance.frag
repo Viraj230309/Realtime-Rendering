@@ -9,6 +9,13 @@ uniform vec3 lightPos;
 uniform vec3 lightColor;
 uniform vec3 camPos;
 
+// GUI-controlled light parameters
+uniform float lightAmbient;
+uniform float lightDiffuse;
+
+// GUI-controlled material parameters
+uniform float roughness;
+
 const float PI = 3.14159265359;
 
 float DistributionGGX(vec3 N, vec3 H, float roughness)
@@ -47,19 +54,24 @@ void main()
     vec3 L = normalize(lightPos - FragPos);
     vec3 H = normalize(V + L);
 
-    float roughness = 0.6;
-    vec3 F0 = vec3(0.04);
+    vec3 F0 = vec3(0.04); // dielectric (ceramic/teapot)
 
     float NDF = DistributionGGX(N, H, roughness);
-    float G = GeometrySmith(N, V, L, roughness);
-    vec3 F = FresnelSchlick(max(dot(H, V), 0.0), F0);
+    float G   = GeometrySmith(N, V, L, roughness);
+    vec3  F   = FresnelSchlick(max(dot(H, V), 0.0), F0);
 
     vec3 numerator = NDF * G * F;
-    float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001;
+    float denominator = 4.0 *
+        max(dot(N, V), 0.0) *
+        max(dot(N, L), 0.0) + 0.001;
+
     vec3 specular = numerator / denominator;
 
     float NdotL = max(dot(N, L), 0.0);
-    vec3 color = (specular + vec3(0.1)) * lightColor * NdotL;
+
+    // Ambient + specular response
+    vec3 ambient = lightAmbient * lightColor;
+    vec3 color   = ambient + specular * lightDiffuse * NdotL * lightColor;
 
     FragColor = vec4(color, 1.0);
 }

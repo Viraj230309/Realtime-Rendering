@@ -8,6 +8,10 @@ in vec3 FragPos;
 uniform vec3 lightPos;
 uniform vec3 lightColor;
 
+// GUI-controlled light parameters
+uniform float lightAmbient;
+uniform float lightDiffuse;
+
 void main()
 {
     vec3 N = normalize(Normal);
@@ -20,15 +24,16 @@ void main()
     if (NdotL > 0.75)
         toonLevel = 1.0;
     else if (NdotL > 0.4)
-        toonLevel = 0.7;
+        toonLevel = 0.6;
     else if (NdotL > 0.2)
-        toonLevel = 0.4;
+        toonLevel = 0.3;
     else
-        toonLevel = 0.2;
+        toonLevel = 0.15;
 
-    // Ambient term (CRITICAL)
-    vec3 ambient = vec3(0.15);
+    // Ambient + toon diffuse
+    vec3 ambient = lightAmbient * lightColor;
+    vec3 diffuse = toonLevel * lightDiffuse * lightColor;
 
-    vec3 color = ambient + toonLevel * lightColor;
+    vec3 color = ambient + diffuse;
     FragColor = vec4(color, 1.0);
 }
