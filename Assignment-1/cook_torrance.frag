@@ -9,18 +9,16 @@ uniform vec3 lightPos;
 uniform vec3 lightColor;
 uniform vec3 camPos;
 
-// GUI-controlled light parameters
+// GUI-controlled
 uniform float lightAmbient;
 uniform float lightDiffuse;
-
-// GUI-controlled material parameters
 uniform float roughness;
 
 const float PI = 3.14159265359;
 
-float DistributionGGX(vec3 N, vec3 H, float roughness)
+float DistributionGGX(vec3 N, vec3 H, float r)
 {
-    float a = roughness * roughness;
+    float a = r * r;
     float a2 = a * a;
     float NdotH = max(dot(N, H), 0.0);
 
@@ -28,18 +26,19 @@ float DistributionGGX(vec3 N, vec3 H, float roughness)
     return a2 / (PI * denom * denom);
 }
 
-float GeometrySchlickGGX(float NdotV, float roughness)
+float GeometrySchlickGGX(float NdotV, float r)
 {
-    float r = roughness + 1.0;
-    float k = (r * r) / 8.0;
+    float k = (r + 1.0);
+    k = (k * k) / 8.0;
     return NdotV / (NdotV * (1.0 - k) + k);
 }
 
-float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
+float GeometrySmith(vec3 N, vec3 V, vec3 L, float r)
 {
-    float ggx1 = GeometrySchlickGGX(max(dot(N, V), 0.0), roughness);
-    float ggx2 = GeometrySchlickGGX(max(dot(N, L), 0.0), roughness);
-    return ggx1 * ggx2;
+    float NdotV = max(dot(N, V), 0.0);
+    float NdotL = max(dot(N, L), 0.0);
+    return GeometrySchlickGGX(NdotV, r) *
+           GeometrySchlickGGX(NdotL, r);
 }
 
 vec3 FresnelSchlick(float cosTheta, vec3 F0)
@@ -54,24 +53,25 @@ void main()
     vec3 L = normalize(lightPos - FragPos);
     vec3 H = normalize(V + L);
 
-    vec3 F0 = vec3(0.04); // dielectric (ceramic/teapot)
+    vec3 F0 = vec3(0.04); 
 
     float NDF = DistributionGGX(N, H, roughness);
     float G   = GeometrySmith(N, V, L, roughness);
     vec3  F   = FresnelSchlick(max(dot(H, V), 0.0), F0);
 
-    vec3 numerator = NDF * G * F;
-    float denominator = 4.0 *
-        max(dot(N, V), 0.0) *
-        max(dot(N, L), 0.0) + 0.001;
+    vec3 specular = (NDF * G * F) /
+        (4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001);
 
-    vec3 specular = numerator / denominator;
+    // Diffuse 
+    vec3 kS = F;
+    vec3 kD = vec3(1.0) - kS;
 
     float NdotL = max(dot(N, L), 0.0);
 
-    // Ambient + specular response
     vec3 ambient = lightAmbient * lightColor;
-    vec3 color   = ambient + specular * lightDiffuse * NdotL * lightColor;
+    vec3 diffuse = kD * lightDiffuse * NdotL * lightColor;
+
+    vec3 color = ambient + diffuse + specular * lightDiffuse * NdotL;
 
     FragColor = vec4(color, 1.0);
 }

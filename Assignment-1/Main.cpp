@@ -63,9 +63,9 @@ int main()
         glm::scale(glm::mat4(0.5f), glm::vec3(0.5f));
 
     glm::vec3 positions[3] = {
-        {-5.0f, -2.0f, 0.0f},
+        {-7.0f, -2.0f, 0.0f},
         { 0.0f, 1.0f, 0.0f},
-        { 5.0f, -2.0f, 0.0f}
+        { 7.0f, -2.0f, 0.0f}
     };
 
     glm::vec3 lightPos(2.0f, 2.0f, 2.0f);
@@ -73,7 +73,6 @@ int main()
     float lightAmbient = 0.2f;
     float lightDiffuse = 1.0f;
     float lightSpecular = 1.0f;
-
 
     Shader* potShaders[3] = {
     &phongShader,
@@ -125,7 +124,6 @@ int main()
         static float roughness = 0.6f;
         ImGui::SliderFloat("Roughness", &roughness, 0.05f, 1.0f);
 
-
         ImGui::Begin("Phong Material", nullptr,
             ImGuiWindowFlags_NoResize |
             ImGuiWindowFlags_NoCollapse);
@@ -135,7 +133,6 @@ int main()
         ImGui::SliderFloat("Shininess", &shininess, 1.0f, 128.0f);
 
         ImGui::End();
-
 
         // Info
         ImGui::Spacing();
@@ -192,13 +189,8 @@ int main()
                 shader.setFloat("lightAmbient", lightAmbient);
                 shader.setFloat("lightDiffuse", lightDiffuse);
             }
-
-
-
             model.Draw(shader);
         }
-
-
         // ImGui render
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
