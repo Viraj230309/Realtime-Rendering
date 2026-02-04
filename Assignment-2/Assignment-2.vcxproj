@@ -155,17 +155,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="C:\Users\viraj\Downloads\HDRTexture.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Cubemap.h" />
     <ClInclude Include="EBO.h" />
+    <ClInclude Include="HDRConverter.h" />
+    <ClInclude Include="HDRTexture.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="shaderClass.h" />
+    <ClInclude Include="stb_image.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="VAO.h" />
     <ClInclude Include="VBO.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Cubemap.cpp" />
     <ClCompile Include="EBO.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="Main.cpp" />
@@ -180,8 +186,15 @@
   <ItemGroup>
     <None Include="cook_torrance.frag" />
     <None Include="default.frag" />
+    <None Include="default.vert" />
+    <None Include="fragment.glsl" />
+    <None Include="hdr2cmap.frag" />
+    <None Include="hdr2cmap.vert" />
     <None Include="phong.frag" />
+    <None Include="skybox.frag" />
+    <None Include="skybox.vert" />
     <None Include="toon.frag" />
+    <None Include="vertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

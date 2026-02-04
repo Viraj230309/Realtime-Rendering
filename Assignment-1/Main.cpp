@@ -53,7 +53,7 @@ int main()
     Shader toonShader("default.vert", "toon.frag");
 
     // Model
-    Model model("Models/TeapotToBe.glb");
+    Model model("Models/Bottle.glb");
 
     float ambient = 0.4f;
     float specularStr = 0.5f;

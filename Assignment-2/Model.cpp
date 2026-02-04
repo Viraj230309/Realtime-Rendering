@@ -102,10 +102,10 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
                 }
             };
 
-        load(aiTextureType_DIFFUSE, "baseColorMap");
-        load(aiTextureType_NORMALS, "normalMap");
-        load(aiTextureType_METALNESS, "metalRoughMap");
-        load(aiTextureType_EMISSIVE, "emissiveMap");
+        //load(aiTextureType_DIFFUSE, "baseColorMap");
+        //load(aiTextureType_NORMALS, "normalMap");
+        //load(aiTextureType_METALNESS, "metalRoughMap");
+        //load(aiTextureType_EMISSIVE, "emissiveMap");
     }
 
     return Mesh(vertices, indices, textures);
