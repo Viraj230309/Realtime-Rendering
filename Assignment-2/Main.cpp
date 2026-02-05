@@ -180,7 +180,7 @@ int main()
 
         // 3. DRAW GLASS OBJECT
         glassShader.Activate();
-        camera.Matrix(glassShader, "camMatrix");
+        camera.Matrix(glassShader, "camMatrix"); // FULL view + projection
         glassShader.setVec3("cameraPos", camera.Position);
 
         glm::mat4 model = glm::mat4(1.0f);

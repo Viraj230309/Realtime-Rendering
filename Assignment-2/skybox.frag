@@ -18,10 +18,12 @@ vec2 dirToUV(vec3 d)
 
 void main()
 {
-    vec3 envColor = texture(hdrMap, dirToUV(localPos)).rgb;
+    vec3 color = texture(hdrMap, dirToUV(localDir)).rgb;
 
-    // simple tone mapping
-    envColor = envColor / (envColor + vec3(1.0));
+    // exposure control
+    float exposure = 1.0;   // try 0.6 – 1.2
+    color = vec3(1.0) - exp(-color * exposure);
 
-    FragColor = vec4(envColor, 1.0);
+    FragColor = vec4(color, 1.0);
+
 }
