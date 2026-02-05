@@ -1,18 +1,12 @@
 ﻿#version 330 core
-
 layout (location = 0) in vec3 aPos;
 
-out vec3 localPos;
+out vec3 localDir;
 
-uniform mat4 view;
-uniform mat4 projection;
+uniform mat4 vp;
 
 void main()
 {
-    localPos = aPos;
-
-    mat4 rotView = mat4(mat3(view)); // remove translation
-    vec4 pos = projection * rotView * vec4(aPos, 1.0);
-
-    gl_Position = pos.xyww;
+    localDir = aPos;
+    gl_Position = vp * vec4(aPos, 1.0);
 }

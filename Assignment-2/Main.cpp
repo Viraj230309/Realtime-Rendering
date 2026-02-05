@@ -123,7 +123,6 @@ int main()
 
     glBindVertexArray(0);
 
-
     // Camera MUST use this constructor
     Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.0f, 0.0f, 6.0f));
 
@@ -132,16 +131,16 @@ int main()
     skyShader.setInt("hdrMap", 0);
 
     Shader glassShader("vertex.glsl", "fragment.glsl");
-    Model glassModel("Models/TeapotToBe.obj");   // OBJ, no textures
-    //Model glassModel("Models/Bottle.obj");   // OBJ, no textures
-    //Model glassModel("Models/Donut.obj");   // OBJ, no textures
+    Model glassModel1("Models/TeapotToBe.obj");   // OBJ, no textures
+    Model glassModel2("Models/Bottle.obj");   // OBJ, no textures
+    Model glassModel3("Models/Sphere.obj");   // OBJ, no textures
 
-    unsigned int hdrTex = loadHDR("Models/Studio.hdr");
+    unsigned int hdrTex = loadHDR("Models/Outside.hdr");
 
     glassShader.Activate();
     glassShader.setInt("hdrMap", 0);
 
-	// --------------- RENDER LOOP ---------------
+    // --------------- RENDER LOOP ---------------
     while (!glfwWindowShouldClose(window))
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -150,23 +149,19 @@ int main()
         camera.Inputs(window);
         camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
-        glm::mat4 projection = glm::perspective(
-            glm::radians(45.0f),
-            (float)SCR_WIDTH / SCR_HEIGHT,
-            0.1f, 100.0f
-        );
-
         // 2. DRAW SKYBOX
         glDepthMask(GL_FALSE);
         glDepthFunc(GL_LEQUAL);
 
         skyShader.Activate();
 
-        glm::mat4 view = camera.cameraMatrix;
-        view[3] = glm::vec4(0, 0, 0, 1); // remove translation
+        // camera.cameraMatrix = projection * view
+        glm::mat4 vp = camera.cameraMatrix;
 
-        skyShader.setMat4("view", view);
-        skyShader.setMat4("projection", projection);
+        // remove translation safely
+        vp[3] = glm::vec4(0, 0, 0, 1);
+
+        skyShader.setMat4("vp", vp);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, hdrTex);
@@ -178,28 +173,41 @@ int main()
         glDepthFunc(GL_LESS);
         glDepthMask(GL_TRUE);
 
-        // 3. DRAW GLASS OBJECT
+        // 3. DRAWING OBJECTS
         glassShader.Activate();
-        camera.Matrix(glassShader, "camMatrix"); // FULL view + projection
+        camera.Matrix(glassShader, "camMatrix");
         glassShader.setVec3("cameraPos", camera.Position);
-
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model,
-            (float)glfwGetTime() * 0.6f,
-            glm::vec3(0, 1, 0));
-
-        glassShader.setMat4("model", model);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, hdrTex);
 
-        glassModel.Draw(glassShader);
+        // -------- TEAPOT --------
+        glm::mat4 model1 = glm::mat4(1.0f);
+        model1 = glm::translate(model1, glm::vec3(-5.0f, 0.0f, 0.0f));
+        model1 = glm::rotate(model1, (float)glfwGetTime() * 0.6f, glm::vec3(0, 1, 0));
+		model1 = glm::scale(model1, glm::vec3(0.9f));
+        glassShader.setMat4("model", model1);
+        glassModel1.Draw(glassShader);
+
+        // -------- BOTTLE --------
+        glm::mat4 model2 = glm::mat4(1.0f);
+        model2 = glm::translate(model2, glm::vec3(0.0f, 0.0f, 0.0f));
+        model2 = glm::rotate(model2, (float)glfwGetTime() * 0.4f, glm::vec3(0, 1, 0));
+        model2 = glm::scale(model2, glm::vec3(0.15f));
+        glassShader.setMat4("model", model2);
+        glassModel2.Draw(glassShader);
+
+        // -------- SPHERE --------
+        glm::mat4 model3 = glm::mat4(1.0f);
+        model3 = glm::translate(model3, glm::vec3(5.0f, 0.0f, 0.0f));
+        model3 = glm::rotate(model3, (float)glfwGetTime() * 0.4f, glm::vec3(0, 1, 0));
+		model3 = glm::scale(model3, glm::vec3(1.5f));
+        glassShader.setMat4("model", model3);
+        glassModel3.Draw(glassShader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
-
     glfwTerminate();
     return 0;
 }
